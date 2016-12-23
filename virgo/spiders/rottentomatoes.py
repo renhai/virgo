@@ -7,7 +7,6 @@ import time
 #from scrapy.spiders import CrawlSpider, Rule
 #from scrapy.linkextractors import LinkExtractor
 import re
-from virgo_config import feed
 
 
 class RottentomatoesSpider(scrapy.Spider):
