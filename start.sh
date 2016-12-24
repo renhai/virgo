@@ -2,6 +2,5 @@
 
 cd /root/workspace/virgo/ && \
 git pull origin master && \
-source venv/bin/activate && \
-nohup scrapy crawl rottentomatoes --logfile=/var/log/rottentomatoes.log --loglevel=INFO >./nohup.log 2>&1 & \
-deactivate
+nohup /root/workspace/virgo/venv/bin/python2.7 /root/workspace/virgo/venv/bin/scrapy crawl rottentomatoes \
+--logfile=/var/log/rottentomatoes.log --loglevel=INFO >./nohup.log 2>&1 & \
