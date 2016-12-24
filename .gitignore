@@ -54,3 +54,4 @@ Thumbs.db
 *.pyc
 *config.py
 venv/
+env/
