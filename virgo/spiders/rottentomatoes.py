@@ -126,12 +126,21 @@ class RottentomatoesSpider(scrapy.Spider):
             bio = response.xpath('//div[contains(@class, "celeb_summary_bio")]/node()').extract()
             if bio is not None:
                 celebrity_item['bio'] = ''.join(bio).strip()
+            celebrity_item['name'] = response.xpath('//meta[@property="og:title"]/@content').extract_first()
             yield celebrity_item
 
 
         for url in response.xpath('//a/@href').extract():
             full_url = response.urljoin(url)
+            index = full_url.find('#')
+            if index != -1:
+                full_url = full_url[0:index]
+            index = full_url.find('?')
+            if index != -1:
+                full_url = full_url[0:index]
             if re.match(movie_reg, full_url) is not None:
                 yield scrapy.Request(full_url, callback=self.parse, priority=100)
+            elif re.match(celebrity_reg, full_url) is not None:
+                yield scrapy.Request(full_url, callback=self.parse, priority=99)
             else:
                 yield scrapy.Request(full_url, callback=self.parse, priority=0)
