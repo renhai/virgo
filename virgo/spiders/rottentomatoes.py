@@ -15,7 +15,7 @@ class RottentomatoesSpider(scrapy.Spider):
     custom_settings = {
         # 'FEED_URI' : feed['FEED_URI'],
         # 'FEED_FORMAT': feed['FEED_FORMAT'],
-        'DEPTH_LIMIT': 5,
+        'DEPTH_LIMIT': 8,
     }
     start_urls = [
         'https://www.rottentomatoes.com',
