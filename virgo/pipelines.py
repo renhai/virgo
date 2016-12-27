@@ -14,9 +14,10 @@ class MoviePipeline(object):
     def __init__(self):
         credentials = pika.PlainCredentials(rabbit_mq['user_name'], rabbit_mq['password'])
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_mq['host'],
-                                                                       port=rabbit_mq['port'],
-                                                                       virtual_host=rabbit_mq['virtual_host'],
-                                                                       credentials=credentials))
+                                                                            port=rabbit_mq['port'],
+                                                                            virtual_host=rabbit_mq['virtual_host'],
+                                                                            credentials=credentials,
+                                                                            heartbeat_interval=0))
 
         self.channel = self.connection.channel()
         # channel.queue_declare(queue='taurus.spider.test.queue')
