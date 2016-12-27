@@ -15,7 +15,7 @@ class RottentomatoesSpider(scrapy.Spider):
     custom_settings = {
         # 'FEED_URI' : feed['FEED_URI'],
         # 'FEED_FORMAT': feed['FEED_FORMAT'],
-        'DEPTH_LIMIT': 8,
+        'DEPTH_LIMIT': 10,
     }
     start_urls = [
         'https://www.rottentomatoes.com',
@@ -36,8 +36,8 @@ class RottentomatoesSpider(scrapy.Spider):
 
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
-        movie_reg = '.*/m/[^/]+/?$'
-        celebrity_reg = '.*/celebrity/[^/]+/?$'
+        movie_reg = '^https?://www\.rottentomatoes\.com/m/[^/]+/?$'
+        celebrity_reg = '^https?://www\.rottentomatoes\.com/celebrity/[^/]+/?$'
         if re.match(movie_reg, response.url) is not None:
             movie_item = MovieItem()
             movie_item['movieId'] = response.xpath('//meta[@name="movieID"]/@content').extract_first()
