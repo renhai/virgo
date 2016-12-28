@@ -16,6 +16,7 @@ class RottentomatoesSpider(scrapy.Spider):
         # 'FEED_URI' : feed['FEED_URI'],
         # 'FEED_FORMAT': feed['FEED_FORMAT'],
         'DEPTH_LIMIT': 10,
+        'DOWNLOAD_DELAY': 0,
     }
     start_urls = [
         'https://www.rottentomatoes.com',
