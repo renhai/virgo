@@ -28,6 +28,7 @@ class RottentomatoesSpider(scrapy.Spider):
         # 'https://www.rottentomatoes.com/m/blood_equity',
         # 'https://www.rottentomatoes.com/celebrity/tom_hanks',
         # 'https://www.rottentomatoes.com/celebrity/kashish/',
+        # 'https://www.rottentomatoes.com/celebrity/cecilia_cheung',
     ]
 
     # rules = (
