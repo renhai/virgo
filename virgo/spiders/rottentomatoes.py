@@ -8,6 +8,8 @@ import time
 #from scrapy.linkextractors import LinkExtractor
 import re
 from virgo.items import CelebrityWithMovieItem
+import random
+import sys
 
 
 class RottentomatoesSpider(scrapy.Spider):
@@ -152,7 +154,7 @@ class CelebrityWithMovieSpider(scrapy.Spider):
     name = "CelebrityWithMovie"
     allowed_domains = ["rottentomatoes.com"]
     custom_settings = {
-        'DEPTH_LIMIT': 15,
+        'DEPTH_LIMIT': 10,
         'DOWNLOAD_DELAY': 0,
     }
     start_urls = [
@@ -171,7 +173,7 @@ class CelebrityWithMovieSpider(scrapy.Spider):
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
         movie_reg = '^https?://www\.rottentomatoes\.com/m/[^/]+/?$'
-        celebrity_reg = '^https?://www\.rottentomatoes\.com/celebrity/[^/]+/?$'
+        # celebrity_reg = '^https?://www\.rottentomatoes\.com/celebrity/[^/]+/?$'
         if re.match(movie_reg, response.url) is not None:
             movie_item = {}
             movie_item['movieId'] = response.xpath('//meta[@name="movieID"]/@content').extract_first()
@@ -243,20 +245,23 @@ class CelebrityWithMovieSpider(scrapy.Spider):
             authors = details_json.get('author')
 
             for i, person in enumerate(actors):
-                req = scrapy.Request(response.urljoin(person['sameAs']), callback=self.parse, priority=100)
+                ran = random.randint(0, sys.maxint)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
                 req.meta['role'] = 'casting'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
                 req.meta['characters'] = person.get('characters')
                 yield req
             for i, person in enumerate(directors):
-                req = scrapy.Request(response.urljoin(person['sameAs']), callback=self.parse, priority=100)
+                ran = random.randint(0, sys.maxint)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
                 req.meta['role'] = 'director'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
                 yield req
             for i, person in enumerate(authors):
-                req = scrapy.Request(response.urljoin(person['sameAs']), callback=self.parse, priority=100)
+                ran = random.randint(0, sys.maxint)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
                 req.meta['role'] = 'author'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
@@ -294,8 +299,7 @@ class CelebrityWithMovieSpider(scrapy.Spider):
                 full_url = full_url[0:index]
             if re.match(movie_reg, full_url) is not None:
                 yield scrapy.Request(full_url, callback=self.parse, priority=99)
-            elif re.match(celebrity_reg, full_url) is not None:
-                # yield scrapy.Request(full_url, callback=self.parse, priority=99)
-                pass
+            # elif re.match(celebrity_reg, full_url) is not None:
+            #     yield scrapy.Request(full_url, callback=self.parse, priority=99)
             else:
                 yield scrapy.Request(full_url, callback=self.parse, priority=0)
