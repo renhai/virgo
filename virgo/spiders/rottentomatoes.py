@@ -8,8 +8,7 @@ import time
 #from scrapy.linkextractors import LinkExtractor
 import re
 from virgo.items import CelebrityWithMovieItem
-import random
-import sys
+import uuid
 
 
 class RottentomatoesSpider(scrapy.Spider):
@@ -245,23 +244,20 @@ class CelebrityWithMovieSpider(scrapy.Spider):
             authors = details_json.get('author')
 
             for i, person in enumerate(actors):
-                ran = random.randint(0, sys.maxint)
-                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(uuid.uuid4())), callback=self.parse, priority=103)
                 req.meta['role'] = 'casting'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
                 req.meta['characters'] = person.get('characters')
                 yield req
             for i, person in enumerate(directors):
-                ran = random.randint(0, sys.maxint)
-                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(uuid.uuid4())), callback=self.parse, priority=102)
                 req.meta['role'] = 'director'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
                 yield req
             for i, person in enumerate(authors):
-                ran = random.randint(0, sys.maxint)
-                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(ran)), callback=self.parse, priority=101)
+                req = scrapy.Request(response.urljoin(person['sameAs'] + '?q=' + str(uuid.uuid4())), callback=self.parse, priority=101)
                 req.meta['role'] = 'author'
                 req.meta['movie'] = movie_item
                 req.meta['ranking'] = i + 1
