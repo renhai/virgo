@@ -37,3 +37,10 @@ class CelebrityItem(scrapy.Item):
     image = scrapy.Field()
     bio = scrapy.Field()
     name = scrapy.Field()
+
+class CelebrityWithMovieItem(scrapy.Item):
+    celebrity = scrapy.Field()
+    movie = scrapy.Field()
+    role = scrapy.Field()
+    index = scrapy.Field()
+    characters = scrapy.Field()

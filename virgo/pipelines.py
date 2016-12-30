@@ -24,7 +24,7 @@ class MoviePipeline(object):
         logging.info('****** rabbit mq connected ******')
 
     def process_item(self, item, spider):
-        logging.info('send message: {0}'.format(item['link']))
+        # logging.info('send message: {0}'.format(item['link']))
         message = json.dumps(dict(item))
 
         self.channel.basic_publish(exchange = rabbit_mq['exchange'],
