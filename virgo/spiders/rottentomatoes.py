@@ -8,29 +8,15 @@ import time
 #from scrapy.linkextractors import LinkExtractor
 import re
 from virgo.items import CelebrityWithMovieItem
+from virgo_config import custom_settings
+from virgo_config import start_urls
 
 
 class RottentomatoesSpider(scrapy.Spider):
     name = "rottentomatoes"
     allowed_domains = ["rottentomatoes.com"]
-    custom_settings = {
-        # 'FEED_URI' : feed['FEED_URI'],
-        # 'FEED_FORMAT': feed['FEED_FORMAT'],
-        'DEPTH_LIMIT': 10,
-        'DOWNLOAD_DELAY': 0,
-    }
-    start_urls = [
-        'https://www.rottentomatoes.com',
-        # 'https://www.rottentomatoes.com/m/ghost-town-gold',
-        # 'https://www.rottentomatoes.com/m/soldiers-three',
-        # 'https://www.rottentomatoes.com/m/alpha_dog',
-        # 'https://www.rottentomatoes.com/m/sully',
-        # 'https://www.rottentomatoes.com/m/97_owned',
-        # 'https://www.rottentomatoes.com/m/blood_equity',
-        # 'https://www.rottentomatoes.com/celebrity/tom_hanks',
-        # 'https://www.rottentomatoes.com/celebrity/kashish/',
-        # 'https://www.rottentomatoes.com/celebrity/cecilia_cheung',
-    ]
+    custom_settings = custom_settings
+    start_urls = start_urls
 
     # rules = (
     #     # Rule(LinkExtractor(allow=('.*'), deny=(), ), follow=True),
@@ -151,27 +137,13 @@ class RottentomatoesSpider(scrapy.Spider):
 class CelebrityWithMovieSpider(scrapy.Spider):
     name = "CelebrityWithMovie"
     allowed_domains = ["rottentomatoes.com"]
-    custom_settings = {
-        'DEPTH_LIMIT': 10,
-        'DOWNLOAD_DELAY': 0,
-    }
-    start_urls = [
-        'https://www.rottentomatoes.com',
-        # 'https://www.rottentomatoes.com/m/ghost-town-gold',
-        # 'https://www.rottentomatoes.com/m/soldiers-three',
-        # 'https://www.rottentomatoes.com/m/alpha_dog',
-        # 'https://www.rottentomatoes.com/m/sully',
-        # 'https://www.rottentomatoes.com/m/97_owned',
-        # 'https://www.rottentomatoes.com/m/blood_equity',
-        # 'https://www.rottentomatoes.com/celebrity/tom_hanks',
-        # 'https://www.rottentomatoes.com/celebrity/kashish/',
-        # 'https://www.rottentomatoes.com/celebrity/cecilia_cheung',
-    ]
+    custom_settings = custom_settings
+    start_urls = start_urls
 
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
         movie_reg = '^https?://www\.rottentomatoes\.com/m/[^/]+/?$'
-        # celebrity_reg = '^https?://www\.rottentomatoes\.com/celebrity/[^/]+/?$'
+        celebrity_reg = '^https?://www\.rottentomatoes\.com/celebrity/[^/]+/?$'
         if re.match(movie_reg, response.url) is not None:
             movie_item = {}
             movie_item['movieId'] = response.xpath('//meta[@name="movieID"]/@content').extract_first()
@@ -294,7 +266,7 @@ class CelebrityWithMovieSpider(scrapy.Spider):
                 full_url = full_url[0:index]
             if re.match(movie_reg, full_url) is not None:
                 yield scrapy.Request(full_url, callback=self.parse, priority=99)
-            # elif re.match(celebrity_reg, full_url) is not None:
-            #     yield scrapy.Request(full_url, callback=self.parse, priority=99)
+            elif re.match(celebrity_reg, full_url) is not None:
+                yield scrapy.Request(full_url, callback=self.parse, priority=100)
             else:
                 yield scrapy.Request(full_url, callback=self.parse, priority=0)
