@@ -55,3 +55,5 @@ Thumbs.db
 *config.py
 venv/
 env/
+
+.vscode/

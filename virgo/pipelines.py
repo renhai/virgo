@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
+"""
 import pika
 import json
 import logging
@@ -46,3 +47,25 @@ class MoviePipeline(object):
         self.connection.close()
         logging.info('****** rabbit mq closed ******')
 
+"""
+
+import logging
+import json
+import boto3
+from virgo.spiders.virgo_config import sqs_queue_name
+
+
+class MoviePipeline(object):
+    def __init__(self):
+        sqs = boto3.resource('sqs')
+        self.queue = sqs.get_queue_by_name(QueueName=sqs_queue_name)
+
+    def process_item(self, item, spider):
+        message = json.dumps(dict(item))
+        self.queue.send_message(MessageBody=message)
+
+    def open_spider(self, spider):
+        logging.info('open_spider called')
+
+    def close_spider(self, spider):
+        logging.info('****** close_spider called ******')
